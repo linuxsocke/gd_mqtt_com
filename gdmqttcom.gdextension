@@ -1,0 +1,12 @@
+[configuration]
+
+entry_symbol = "mqtt_com_library_init"
+compatibility_minimum = "4.1"
+
+[libraries]
+
+linux.debug.x86_64 = "res://addons/bin/libgd-mqtt-com.debug.so"
+linux.release.x86_64 = "res://addons/bin/libgd-mqtt-com.release.so"
+
+[icons]
+GDMqttCom = "res://icon.svg"
