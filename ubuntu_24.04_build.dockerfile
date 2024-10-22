@@ -3,27 +3,25 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt install -y \
-    automake autopoint wget libtool libblkid-dev \
+    git cmake
 
 # Change shell to bash so the source command works
 SHELL ["/bin/bash", "-c"]
-
-RUN python3 -m venv /mesonvenv && \
-    source /mesonvenv/bin/activate && pip install meson ninja
 
 ARG PACKAGE_CONTACT
 ARG OUTPUT_DIR
 RUN mkdir -p $OUTPUT_DIR
 
-RUN git clone --branch v1.5.3 https://github.com/Haivision/srt.git /workspace/thirdparty/srt
+RUN git clone --branch v1.4.1 https://github.com/eclipse/paho.mqtt.cpp.git /workspace/paho.mqtt.cpp
 
 ###########################
 ## Build srt ------- 
-WORKDIR /workspace/thirdparty/srt
+WORKDIR /workspace/paho.mqtt.cpp
 
-RUN cmake . -B ./build -DENABLE_STATIC=ON -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./install
+RUN git submodule update --init 
+RUN ln -s ./src/externals ./externals
+RUN cmake . -B ./build -DPAHO_BUILD_SHARED=FALSE -DPAHO_BUILD_STATIC=TRUE -DPAHO_WITH_MQTT_C=TRUE -DPAHO_HIGH_PERFORMANCE=TRUE -DPAHO_WITH_SSL=TRUE -DPAHO_BUILD_SAMPLES=FALSE -DPAHO_ENABLE_TESTING=FALSE -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./install
 RUN cmake --build build --target install
-RUN cp -r ./install/* /usr/local/ && ldconfig
 
 RUN LATEST_TAG=$(git describe --tags --exact-match) && \
     REPOSITORY_NAME=$(basename $(git rev-parse --show-toplevel)) && \
