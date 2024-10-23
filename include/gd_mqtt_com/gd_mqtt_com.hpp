@@ -1,5 +1,5 @@
-#ifndef GD_EXTENSION_GD_REMOTE_COM
-#define GD_EXTENSION_GD_REMOTE_COM
+#ifndef GD_EXTENSION_GD_MQTT_COM
+#define GD_EXTENSION_GD_MQTT_COM
 
 #include <memory>
 #include <functional>

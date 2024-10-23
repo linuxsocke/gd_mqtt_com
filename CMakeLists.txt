@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(gd-remote-com)
+project(gd-mqtt-com)
 
 option(BUILD_FOR_EDITOR "If true, create and install libs as release ready to use in the demo folder" FALSE)
 
@@ -151,40 +151,36 @@ if(DEFINED STATIC_PAHO_MQTT)
 		-lssl -lcrypto 
 		-ldl -lpthread
 	)
-	set(libmqtt_com mqtt-com)
-	add_library(${libmqtt_com} src/mqtt_com/mqtt_com.cpp)
-	target_include_directories(${libmqtt_com} SYSTEM PRIVATE
-		${CMAKE_SOURCE_DIR}/include
-		${PAHO_MQTT_INCLUDE_DIR}
-	)
-	target_link_libraries(${libmqtt_com}
-		${PAHO_MQTT_LIBRARIES}
-	)
-
-	set(test_mqtt_com test_mqtt_com)
-	add_executable(${test_mqtt_com} tests/test_mqtt_com.cpp)
-	target_include_directories(${test_mqtt_com} SYSTEM PRIVATE
-		${CMAKE_SOURCE_DIR}/include
-		${PAHO_MQTT_INCLUDE_DIR}
-	)
-	target_link_libraries(${test_mqtt_com} 
-		${libmqtt_com}
-	)
 else()
 	find_package(PahoMqttCpp REQUIRED)
-	set(mqtt_com mqtt-com)
-	add_library(${mqtt_com} SHARED 
-		src/mqtt_com/mqtt_com.cpp
-	)
-	set_target_include(${mqtt_com})
 	set(PAHO_MQTT_LIBRARIES
 		PahoMqttCpp::paho-mqttpp3
-	)
-	target_link_libraries(${mqtt_com} 
-		${PAHO_MQTT_LIBRARIES}
+		/usr/lib/x86_64-linux-gnu/libpaho-mqtt3as.a
+		/usr/lib/x86_64-linux-gnu/libpaho-mqtt3cs.a
+		-lssl -lcrypto 
+		-ldl -lpthread
 	)
 endif()
 ##################################################################################
+set(libmqtt_com mqtt-com)
+add_library(${libmqtt_com} src/mqtt_com/mqtt_com.cpp)
+target_include_directories(${libmqtt_com} SYSTEM PRIVATE
+	${CMAKE_SOURCE_DIR}/include
+	${PAHO_MQTT_INCLUDE_DIR}
+)
+target_link_libraries(${libmqtt_com}
+	${PAHO_MQTT_LIBRARIES}
+)
+
+set(test_mqtt_com test_mqtt_com)
+add_executable(${test_mqtt_com} tests/test_mqtt_com.cpp)
+target_include_directories(${test_mqtt_com} SYSTEM PRIVATE
+	${CMAKE_SOURCE_DIR}/include
+	${PAHO_MQTT_INCLUDE_DIR}
+)
+target_link_libraries(${test_mqtt_com} 
+	${libmqtt_com}
+)
 
 # Get Sources
 file(GLOB_RECURSE SOURCES src/*.c**)
