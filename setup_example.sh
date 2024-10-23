@@ -1,6 +1,5 @@
 #!/bin/bash
 
-    #gstreamer1.0-libav \
 sudo apt install cmake git \
     libpaho-mqtt-dev libpaho-mqttpp-dev
 

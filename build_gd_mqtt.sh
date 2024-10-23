@@ -56,34 +56,11 @@ if [ -z "$STATIC_GSTREAMER_PATH" ]; then
   fi
   echo -e "\e[1;34mBuild finished.\e[0m"
 else
-
-  cd ./gd_remote_com/thirdparty/paho.mqtt.cpp
-  ln -s ./src/externals ./externals
-  cmake . -B ./build -DPAHO_BUILD_SHARED=FALSE -DPAHO_BUILD_STATIC=TRUE -DPAHO_WITH_MQTT_C=TRUE -DPAHO_HIGH_PERFORMANCE=TRUE -DPAHO_WITH_SSL=TRUE -DPAHO_BUILD_SAMPLES=FALSE -DPAHO_ENABLE_TESTING=FALSE -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./install
-  cmake --build build --target install
-  rm ./externals
-  cd ../../..
-  cmake ./gd_remote_com -B ./gd_remote_com/build \
-      -DCPP_BINDINGS_PATH=../../godot-cpp \
-      -DGODOT_GDEXTENSION_DIR=../../godot-cpp/gdextension/ \
-      -DCMAKE_BUILD_TYPE=Release || exit 1
-  echo "Make build instructions generated."
-  cmake --build ./gd_remote_com/build
-  if [ $? -ne 0 ]; then
-      echo -e "\e[1;31mFailed compiling gd_remote_com.\e[0m" 
-      exit 1
-  fi
-  echo "Build finished."
-
   # --- BUILDING gd_mqtt_com with static gstreamer
   cmake ./ -B ./build \
       -DGODOT_CPP_PATH=$GODOT_CPP_PATH \
-      -DSTATIC_GSTREAMER=ON \
+      -DSTATIC_PAHO_MQTT=ON \
       -DLINUX_UTILS_PATH=${STATIC_GSTREAMER_PATH}/util-linux-2.39.1 \
-      -DELFUTILS_PATH=${STATIC_GSTREAMER_PATH}/elfutils-0.191 \
-      -DGLIB_PATH=${STATIC_GSTREAMER_PATH}/glib-2.81.2 \
-      -DSRT_PATH=${STATIC_GSTREAMER_PATH}/srt-v1.5.3 \
-      -DGSTREAMER_PATH=${STATIC_GSTREAMER_PATH}/gstreamer-1.24.7 \
       -DCMAKE_BUILD_TYPE=Release || exit 1
   echo -e "\e[1;34mCompliling gd_mqtt_com with static gstreamer ..\e[0m"
   cmake --build ./build
