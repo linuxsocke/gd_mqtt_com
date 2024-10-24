@@ -3,7 +3,7 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt install -y \
-    git cmake
+    git cmake build-essential libssl-dev
 
 # Change shell to bash so the source command works
 SHELL ["/bin/bash", "-c"]
@@ -19,7 +19,7 @@ RUN git clone --branch v1.4.1 https://github.com/eclipse/paho.mqtt.cpp.git /work
 WORKDIR /workspace/paho.mqtt.cpp
 
 RUN git submodule update --init 
-RUN ln -s ./src/externals ./externals
+#RUN ln -s ./src/externals ./externals
 RUN cmake . -B ./build -DPAHO_BUILD_SHARED=FALSE -DPAHO_BUILD_STATIC=TRUE -DPAHO_WITH_MQTT_C=TRUE -DPAHO_HIGH_PERFORMANCE=TRUE -DPAHO_WITH_SSL=TRUE -DPAHO_BUILD_SAMPLES=FALSE -DPAHO_ENABLE_TESTING=FALSE -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=./install
 RUN cmake --build build --target install
 
@@ -29,7 +29,7 @@ RUN LATEST_TAG=$(git describe --tags --exact-match) && \
     -D CPACK_INSTALLED_DIRECTORIES="$(pwd)/install;." \
     -D CPACK_PACKAGE_VERSION="${LATEST_TAG}" \
     -D CPACK_PACKAGE_DESCRIPTION="${REPOSITORY_NAME}" \
-    -D CPACK_PACKAGE_FILE_NAME="${REPOSITORY_NAME}-${LATEST_TAG}" \
+    -D CPACK_PACKAGE_FILE_NAME="${REPOSITORY_NAME}" \
     -D CPACK_PACKAGE_NAME="${REPOSITORY_NAME}" \
     -D CPACK_PACKAGE_CONTACT="${PACKAGE_CONTACT}"
 

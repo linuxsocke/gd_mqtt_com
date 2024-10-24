@@ -136,18 +136,24 @@ endif()
 
 ##################################################################################
 if(DEFINED STATIC_PAHO_MQTT)
+	add_definitions(-DSTATIC_PAHO_MQTT=ON)
+
+	set(STATIC_PAHO_MQTT_PATH ${STATIC_PAHO_MQTT_PATH} CACHE STRING "Path to GLIB")
+	message(STATUS "STATIC_PAHO_MQTT_PATH: ${STATIC_PAHO_MQTT_PATH}")
+
 	# Define static linking
 	set(CMAKE_EXE_LINKER_FLAGS "-static")
+
 	# TODO envolope for windows build
 	set(PAHO_MQTT_INCLUDE_DIR
-		${CMAKE_SOURCE_DIR}/thirdparty/paho.mqtt.cpp/install/include
+		${STATIC_PAHO_MQTT_PATH}/include
 	)
 	set(PAHO_MQTT_LIBRARIES
 		#${CMAKE_SOURCE_DIR}/thirdparty/paho.mqtt.cpp/install/lib/libpaho-mqtt3a.a
-		${CMAKE_SOURCE_DIR}/thirdparty/paho.mqtt.cpp/install/lib/libpaho-mqtt3as.a
 		#${CMAKE_SOURCE_DIR}/thirdparty/paho.mqtt.cpp/install/lib/libpaho-mqtt3c.a
-		${CMAKE_SOURCE_DIR}/thirdparty/paho.mqtt.cpp/install/lib/libpaho-mqtt3cs.a
-		${CMAKE_SOURCE_DIR}/thirdparty/paho.mqtt.cpp/install/lib/libpaho-mqttpp3.a
+		${STATIC_PAHO_MQTT_PATH}/lib/libpaho-mqtt3as.a
+		${STATIC_PAHO_MQTT_PATH}/lib/libpaho-mqtt3cs.a
+		${STATIC_PAHO_MQTT_PATH}/lib/libpaho-mqttpp3.a
 		-lssl -lcrypto 
 		-ldl -lpthread
 	)
