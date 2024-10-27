@@ -1,0 +1,11 @@
+# the user with name admin may read and write everything
+#user admin
+#topic readwrite #
+
+# the user digitaltwin may read everything under digitaltwin
+user digitaltwin
+topic read digitaltwin/#
+
+# everybody may write to digitaltwin/<certificate CN>
+# this is mainly for drones to publish their status
+pattern write digitaltwin/%u
