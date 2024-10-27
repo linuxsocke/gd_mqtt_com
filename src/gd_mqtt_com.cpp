@@ -66,7 +66,7 @@ int GDMqttCom::setup_mqtt_com(
 }
 
 int GDMqttCom::connect() {
-	if (_connection_future.valid() && 
+	if (!_connection_future.valid() or
 		_connection_future.wait_for(std::chrono::milliseconds(0))!=std::future_status::ready) {
 		UtilityFunctions::print("[GDMqttCom] Process busy.");
 		return GD_ERROR;
