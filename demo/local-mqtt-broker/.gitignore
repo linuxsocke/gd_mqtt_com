@@ -1,0 +1,7 @@
+
+#pki
+#pki/*
+
+#config/*.crt
+#config/*.key
+#config/*.pem
